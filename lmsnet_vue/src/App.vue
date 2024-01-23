@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import NavBar from '@/components/NavBar.vue'
+import Footer from '@/components/Footer.vue'
 </script>
 
 <template>
-  <nav class="navbar" role="navigation" aria-label="main navigation" style="min-height: 5rem">
-    <div class="navbar-brand">
-      <a class="navbar-item is-size-4" href="/">LMSNet</a>
-    </div>
-    <div id="navbar-item"></div>
-  </nav>
-  <RouterView />
+  <div>
+    <NavBar />
+    <RouterView />
+    <Footer />
+  </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '../node_modules/bulma/bulma.sass';
 </style>
