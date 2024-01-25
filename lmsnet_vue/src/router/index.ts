@@ -4,6 +4,7 @@ import AboutView from '@/views/AboutView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import LoginView from '@/views/LoginView.vue'
 import CoursesView from '@/views/CoursesView.vue'
+import CourseView from '@/views/CourseView.vue'
 
 import MyAccountView from '@/views/Dashboard/MyAccountView.vue'
 
@@ -39,6 +40,11 @@ const router = createRouter({
       path: '/courses',
       name: 'courses',
       component: CoursesView
+    },
+    {
+      path: '/course/:slug',
+      name: 'course',
+      component: CourseView
     }
   ]
 })
