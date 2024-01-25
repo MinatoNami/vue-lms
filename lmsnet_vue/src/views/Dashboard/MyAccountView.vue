@@ -18,13 +18,18 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const store = useUserStore()
-const logout = () => {
+const logout = async () => {
+  await axios.get('/api/token/logout/').then(() => {
+    console.log('logout')
+  })
+
   axios.defaults.headers.common['Authorization'] = ''
 
   localStorage.removeItem('token')
 
   store.removeToken()
-  router.push('/log-in')
+
+  router.push('/')
 }
 </script>
 

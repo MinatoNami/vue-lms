@@ -6,20 +6,28 @@
     style="min-height: 5rem"
   >
     <div class="navbar-brand">
-      <a class="navbar-item is-size-4" href="/">LMSNet</a>
+      <router-link to="/" class="navbar-item is-size-4">LMSNet</router-link>
     </div>
     <div id="navbar-item" class="navbar-menu">
       <div class="navbar-start">
-        <a class="navbar-item" href="/">Home</a>
-        <a class="navbar-item" href="/about">About</a>
+        <router-link to="/" class="navbar-item">Home</router-link>
+        <router-link to="/about" class="navbar-item">About</router-link>
+        <router-link to="/courses" class="navbar-item">Courses</router-link>
       </div>
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-primary" href="/sign-up">
-              <strong>Sign up</strong>
-            </a>
-            <a class="button is-light" href="/log-in"> Log in </a>
+            <template v-if="!store.user.isAuthenticated">
+              <router-link to="/sign-up" class="button is-primary">
+                <strong>Sign up</strong>
+              </router-link>
+              <router-link to="/log-in" class="button is-light">Log in</router-link>
+            </template>
+            <template v-else>
+              <router-link to="/dashboard/my-account" class="button is-info"
+                >My account</router-link
+              >
+            </template>
           </div>
         </div>
       </div>
@@ -27,6 +35,10 @@
   </nav>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useUserStore } from '@/stores'
+
+const store = useUserStore()
+</script>
 
 <style></style>
