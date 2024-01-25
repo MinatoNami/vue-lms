@@ -22,7 +22,7 @@
           </div>
           <div class="column is-10">
             <div class="columns is-multiline">
-              <div class="column is-4">
+              <div v-for="(course, index) in courses" :key="index" class="column is-4">
                 <div class="card">
                   <div class="card-image">
                     <figure class="image is-4by3">
@@ -36,93 +36,12 @@
                   <div class="card-content">
                     <div class="media">
                       <div class="media-content">
-                        <p class="is-size-5">Build a social network</p>
+                        <p class="is-size-5">{{ course.title }}</p>
                       </div>
                     </div>
 
                     <div class="content">
-                      <p>Learn the basics</p>
-
-                      <a href="#">More</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="column is-4">
-                <div class="card">
-                  <div class="card-image">
-                    <figure class="image is-4by3">
-                      <img
-                        src="http://bulma.io/images/placeholders/1280x960.png"
-                        alt="placeholder image"
-                      />
-                    </figure>
-                  </div>
-
-                  <div class="card-content">
-                    <div class="media">
-                      <div class="media-content">
-                        <p class="is-size-5">Build a social network</p>
-                      </div>
-                    </div>
-
-                    <div class="content">
-                      <p>Learn the basics</p>
-
-                      <a href="#">More</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="column is-4">
-                <div class="card">
-                  <div class="card-image">
-                    <figure class="image is-4by3">
-                      <img
-                        src="http://bulma.io/images/placeholders/1280x960.png"
-                        alt="placeholder image"
-                      />
-                    </figure>
-                  </div>
-
-                  <div class="card-content">
-                    <div class="media">
-                      <div class="media-content">
-                        <p class="is-size-5">Build a social network</p>
-                      </div>
-                    </div>
-
-                    <div class="content">
-                      <p>Learn the basics</p>
-
-                      <a href="#">More</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="column is-4">
-                <div class="card">
-                  <div class="card-image">
-                    <figure class="image is-4by3">
-                      <img
-                        src="http://bulma.io/images/placeholders/1280x960.png"
-                        alt="placeholder image"
-                      />
-                    </figure>
-                  </div>
-
-                  <div class="card-content">
-                    <div class="media">
-                      <div class="media-content">
-                        <p class="is-size-5">Build a social network</p>
-                      </div>
-                    </div>
-
-                    <div class="content">
-                      <p>Learn the basics</p>
+                      <p>{{ course.short_description }}</p>
 
                       <a href="#">More</a>
                     </div>
@@ -158,6 +77,17 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import axios from 'axios'
+import { onMounted, ref, type Ref } from 'vue'
+
+const courses: Ref<any> = ref([])
+
+onMounted(() => {
+  axios.get('api/v1/courses/').then((response) => {
+    courses.value = response.data
+  })
+})
+</script>
 
 <style></style>
