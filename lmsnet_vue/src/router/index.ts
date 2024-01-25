@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import LoginView from '@/views/LoginView.vue'
+import CoursesView from '@/views/CoursesView.vue'
 
 import MyAccountView from '@/views/Dashboard/MyAccountView.vue'
 
@@ -33,6 +34,11 @@ const router = createRouter({
       path: '/dashboard/my-account',
       name: 'my-account',
       component: MyAccountView
+    },
+    {
+      path: '/courses',
+      name: 'courses',
+      component: CoursesView
     }
   ]
 })
