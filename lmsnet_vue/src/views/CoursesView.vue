@@ -13,10 +13,18 @@
               <p class="menu-label">Categories</p>
 
               <ul class="menu-list">
-                <li><a>All courses</a></li>
-                <li><a>Programming</a></li>
-                <li><a>Design</a></li>
-                <li><a>UX</a></li>
+                <li>
+                  <a :class="{ 'is-active': activeCategory === -1 }" @click="setActiveCategory(-1)"
+                    >All courses</a
+                  >
+                </li>
+                <li v-for="category in categories" :key="category.id">
+                  <a
+                    :class="{ 'is-active': activeCategory === category.id }"
+                    @click="setActiveCategory(category.id)"
+                    >{{ category.title }}</a
+                  >
+                </li>
               </ul>
             </aside>
           </div>
@@ -60,10 +68,28 @@ import axios from 'axios'
 import { onMounted, ref, type Ref } from 'vue'
 
 const courses: Ref<any> = ref([])
+const categories: Ref<any> = ref([])
+const activeCategory: Ref<any> = ref(null)
+
+const setActiveCategory = (category: any) => {
+  activeCategory.value = category
+
+  getCourses(category)
+}
+
+const getCourses = async (category: any) => {
+  let url = 'api/v1/courses/'
+  if (activeCategory.value !== -1) {
+    url += `?category_id=${activeCategory.value}`
+  }
+  axios.get(url).then((response) => {
+    courses.value = response.data
+  })
+}
 
 onMounted(() => {
-  axios.get('api/v1/courses/').then((response) => {
-    courses.value = response.data
+  axios.get('api/v1/courses/get_categories').then((response) => {
+    categories.value = response.data
   })
 })
 </script>
