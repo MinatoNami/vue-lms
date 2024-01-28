@@ -1,7 +1,3 @@
-<script setup lang="ts">
-console.log('Home')
-</script>
-
 <template>
   <div class="home">
     <div class="hero is-info is-medium">
@@ -47,12 +43,32 @@ console.log('Home')
               <p>This is some random placeholder text</p>
             </div>
           </div>
-        </div>
 
-        <div class="column is-12 has-text-centered">
-          <a href="#" class="button is-info is-size-3 mt-6 mb-6">Click to get started</a>
+          <div class="column is-12 has-text-centered">
+            <a href="#" class="button is-info is-size-3 mt-6 mb-6">Click to get started</a>
+          </div>
+
+          <hr />
+
+          <div v-for="(course, index) in courses" :key="index" class="column is-3">
+            <CourseItem :course="course" />
+          </div>
         </div>
       </div>
     </section>
   </div>
 </template>
+<script setup lang="ts">
+import { onMounted, ref, type Ref } from 'vue'
+import axios from 'axios'
+
+import CourseItem from '@/components/CourseItem.vue'
+
+const courses: Ref<any> = ref([])
+
+onMounted(() => {
+  axios.get('api/v1/courses/get_frontpage_courses/').then((response) => {
+    courses.value = response.data
+  })
+})
+</script>

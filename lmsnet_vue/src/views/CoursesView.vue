@@ -23,32 +23,7 @@
           <div class="column is-10">
             <div class="columns is-multiline">
               <div v-for="(course, index) in courses" :key="index" class="column is-4">
-                <div class="card">
-                  <div class="card-image">
-                    <figure class="image is-4by3">
-                      <img
-                        src="http://bulma.io/images/placeholders/1280x960.png"
-                        alt="placeholder image"
-                      />
-                    </figure>
-                  </div>
-
-                  <div class="card-content">
-                    <div class="media">
-                      <div class="media-content">
-                        <p class="is-size-5">{{ course.title }}</p>
-                      </div>
-                    </div>
-
-                    <div class="content">
-                      <p>{{ course.short_description }}</p>
-
-                      <router-link :to="{ name: 'course', params: { slug: course.slug } }"
-                        >More</router-link
-                      >
-                    </div>
-                  </div>
-                </div>
+                <CourseItem :course="course" />
               </div>
 
               <div class="column is-12">
@@ -80,6 +55,7 @@
 </template>
 
 <script setup lang="ts">
+import CourseItem from '@/components/CourseItem.vue'
 import axios from 'axios'
 import { onMounted, ref, type Ref } from 'vue'
 
