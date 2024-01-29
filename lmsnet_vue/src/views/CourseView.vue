@@ -152,6 +152,7 @@ onMounted(async () => {
     course.value = response.data.course
     lessons.value = response.data.lessons
   })
+  document.title = course.value.title + ' | LMSNET'
 })
 </script>
 
