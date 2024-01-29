@@ -9,6 +9,12 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  document.title = 'About | LMSNET'
+})
+</script>
 
 <style></style>

@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores'
 import axios from 'axios'
-import { ref, type Ref } from 'vue'
+import { onMounted, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -104,6 +104,10 @@ const submitForm = () => {
       })
   }
 }
+
+onMounted(() => {
+  document.title = 'Login | LMSNET'
+})
 </script>
 
 <style></style>

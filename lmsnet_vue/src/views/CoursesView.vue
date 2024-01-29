@@ -91,6 +91,8 @@ onMounted(() => {
   axios.get('api/v1/courses/get_categories').then((response) => {
     categories.value = response.data
   })
+
+  document.title = 'Courses | LMSNET'
 })
 </script>
 

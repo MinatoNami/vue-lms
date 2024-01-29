@@ -19,7 +19,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const store = useUserStore()
 const logout = async () => {
-  await axios.get('/api/v1/token/logout/').then(() => {
+  await axios.post('/api/v1/token/logout/').then(() => {
     console.log('logout')
   })
 
