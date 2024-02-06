@@ -78,7 +78,7 @@ const setActiveCategory = (category: any) => {
 }
 
 const getCourses = async (category: any) => {
-  let url = 'api/v1/courses/'
+  let url = 'courses/'
   if (activeCategory.value !== -1) {
     url += `?category_id=${activeCategory.value}`
   }
@@ -88,7 +88,7 @@ const getCourses = async (category: any) => {
 }
 
 onMounted(() => {
-  axios.get('api/v1/courses/get_categories').then((response) => {
+  axios.get('courses/get_categories').then((response) => {
     categories.value = response.data
   })
 
