@@ -3,6 +3,13 @@
     <div class="hero is-info">
       <div class="hero-body has-text-centered">
         <h1 class="title">{{ course.title }}</h1>
+
+        <router-link
+          :to="{ name: 'author', params: { id: course.created_by.id } }"
+          class="subtitle"
+        >
+          By {{ course.created_by.first_name }} {{ course.created_by.last_name }}
+        </router-link>
       </div>
     </div>
     <section class="section">
@@ -82,7 +89,13 @@ import Video from '@/components/Video.vue'
 
 const store = useUserStore()
 
-const course: Ref<any> = ref({})
+const course: Ref<any> = ref({
+  created_by: {
+    first_name: '',
+    last_name: '',
+    id: 0
+  }
+})
 const lessons: Ref<any> = ref([])
 const comments: Ref<Comment[]> = ref([])
 const errors: Ref<string[]> = ref([])
