@@ -28,6 +28,10 @@
                   <Quiz :quiz="quiz" />
                 </template>
 
+                <template v-if="activeLesson.lesson_type === 'video'">
+                  <Video :youtube_id="activeLesson.youtube_id"></Video>
+                </template>
+
                 <template v-if="activeLesson.lesson_type === 'article'">
                   <CourseComment v-for="comment in comments" :key="comment.id" :comment="comment" />
                   <AddComment
@@ -65,6 +69,7 @@ import { useUserStore } from '@/stores'
 import AddComment from '@/components/AddComment.vue'
 import CourseComment from '@/components/CourseComment.vue'
 import Quiz from '@/components/Quiz.vue'
+import Video from '@/components/Video.vue'
 
 const store = useUserStore()
 
