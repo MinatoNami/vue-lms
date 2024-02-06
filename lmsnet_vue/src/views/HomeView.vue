@@ -69,7 +69,7 @@ import CourseItem from '@/components/CourseItem.vue'
 const courses: Ref<any> = ref([])
 
 onMounted(() => {
-  axios.get('api/v1/courses/get_frontpage_courses/').then((response) => {
+  axios.get('courses/get_frontpage_courses/').then((response) => {
     courses.value = response.data
   })
 

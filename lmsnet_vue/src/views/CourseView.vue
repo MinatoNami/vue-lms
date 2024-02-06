@@ -25,40 +25,7 @@
                 <hr />
 
                 <template v-if="activeLesson.lesson_type === 'quiz'">
-                  <h3>{{ quiz.question }}</h3>
-
-                  <div class="control">
-                    <label class="radio">
-                      <input type="radio" :value="quiz.op1" v-model="selectedAnswer" />
-                      {{ quiz.op1 }}
-                    </label>
-                  </div>
-
-                  <div class="control">
-                    <label class="radio">
-                      <input type="radio" :value="quiz.op2" v-model="selectedAnswer" />
-                      {{ quiz.op2 }}
-                    </label>
-                  </div>
-
-                  <div class="control">
-                    <label class="radio">
-                      <input type="radio" :value="quiz.op3" v-model="selectedAnswer" />
-                      {{ quiz.op3 }}
-                    </label>
-                  </div>
-
-                  <div class="control mt-4">
-                    <button class="button is-info" @click="submitQuiz">Submit</button>
-                  </div>
-
-                  <template v-if="quizResult === 'Correct'">
-                    <div class="notification is-success mt-4">Correct :-D</div>
-                  </template>
-
-                  <template v-if="quizResult === 'Incorrect'">
-                    <div class="notification is-danger mt-4">Wrong! Please try again</div>
-                  </template>
+                  <Quiz :quiz="quiz" />
                 </template>
 
                 <template v-if="activeLesson.lesson_type === 'article'">
@@ -87,34 +54,17 @@
 </template>
 
 <script setup lang="ts">
-import AddComment from '@/components/AddComment.vue'
-import CourseComment from '@/components/CourseComment.vue'
-import { useUserStore } from '@/stores'
-import axios from 'axios'
 import { onMounted, ref, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
+import axios from 'axios'
 
-interface Comment {
-  name: string
-  content: string
-  created_at?: string
-  id?: number
-}
+import type { QuizType, Comment } from '@/types/common-types'
 
-interface Quiz {
-  question: string
-  answer: string
-  op1: string
-  op2: string
-  op3: string
-}
+import { useUserStore } from '@/stores'
 
-interface CourseComment {
-  name: string
-  content: string
-  created_at?: string
-  id?: number
-}
+import AddComment from '@/components/AddComment.vue'
+import CourseComment from '@/components/CourseComment.vue'
+import Quiz from '@/components/Quiz.vue'
 
 const store = useUserStore()
 
@@ -124,15 +74,13 @@ const comments: Ref<Comment[]> = ref([])
 const errors: Ref<string[]> = ref([])
 const activeLesson: Ref<any> = ref({})
 
-const quiz: Ref<Quiz> = ref({
+const quiz: Ref<QuizType> = ref({
   question: '',
   answer: '',
   op1: '',
   op2: '',
   op3: ''
 })
-const selectedAnswer = ref(null)
-const quizResult: Ref<string> = ref('')
 
 const comment: Ref<Comment> = ref({
   name: '',
@@ -147,7 +95,6 @@ const setActiveLesson = (lesson: any) => {
   activeLesson.value = lesson
 
   if (lesson.lesson_type === 'quiz') {
-    selectedAnswer.value = null
     getQuiz()
   }
 
@@ -157,36 +104,23 @@ const setActiveLesson = (lesson: any) => {
 }
 
 const getComments = async () => {
-  await axios
-    .get(`api/v1/courses/${slug}/${activeLesson.value.slug}/get-comments`)
-    .then((response) => {
-      comments.value = response.data
-    })
+  await axios.get(`courses/${slug}/${activeLesson.value.slug}/get-comments`).then((response) => {
+    comments.value = response.data
+  })
 }
 
-const addComment = (comment: CourseComment) => {
+const addComment = (comment: Comment) => {
   comments.value.push(comment)
 }
 
 const getQuiz = async () => {
-  await axios.get(`api/v1/courses/${slug}/${activeLesson.value.slug}/get-quiz`).then((response) => {
+  await axios.get(`courses/${slug}/${activeLesson.value.slug}/get-quiz`).then((response) => {
     quiz.value = response.data
   })
 }
 
-const submitQuiz = async () => {
-  quizResult.value = ''
-  if (selectedAnswer.value) {
-    if (selectedAnswer.value === quiz.value.answer) {
-      quizResult.value = 'Correct'
-    } else {
-      quizResult.value = 'Incorrect'
-    }
-  }
-}
-
 onMounted(async () => {
-  await axios.get(`api/v1/courses/${slug}`).then((response) => {
+  await axios.get(`courses/${slug}`).then((response) => {
     course.value = response.data.course
     lessons.value = response.data.lessons
   })

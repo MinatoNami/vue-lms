@@ -73,7 +73,7 @@ const submitComment = () => {
     return
   }
   axios
-    .post(`api/v1/courses/${slug}/${props.activeLesson.slug}/`, comment.value)
+    .post(`courses/${slug}/${props.activeLesson.slug}/`, comment.value)
     .then((response) => {
       comment.value = {
         name: '',

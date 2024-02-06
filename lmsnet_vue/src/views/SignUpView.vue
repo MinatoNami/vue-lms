@@ -84,7 +84,7 @@ const submitForm = () => {
     }
 
     axios
-      .post('/api/v1/users/', formData)
+      .post('users/', formData)
       .then((response) => {
         router.push('/log-in')
       })
