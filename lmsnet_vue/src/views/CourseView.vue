@@ -21,6 +21,15 @@
             <template v-if="store.user.isAuthenticated">
               <template v-if="activeLesson">
                 <h2>{{ activeLesson.title }}</h2>
+                <span
+                  v-if="activity.status === 'started'"
+                  class="tag is-warning"
+                  @click="markAsDone"
+                  >Started (mark as done)</span
+                >
+                <span v-else class="tag is-success">Done</span>
+
+                <hr />
                 {{ activeLesson.long_description }}
                 <hr />
 
@@ -86,11 +95,7 @@ const quiz: Ref<QuizType> = ref({
   op2: '',
   op3: ''
 })
-
-const comment: Ref<Comment> = ref({
-  name: '',
-  content: ''
-})
+const activity: Ref<any> = ref({})
 
 const currentRoute = useRoute()
 
@@ -106,12 +111,32 @@ const setActiveLesson = (lesson: any) => {
   document.title = lesson.title + ' | LMSNET'
   errors.value = []
   getComments()
+
+  trackStarted()
+}
+
+const trackStarted = async () => {
+  await axios
+    .post(`activities/track_started/${slug}/${activeLesson.value.slug}/`)
+    .then((response) => {
+      activity.value = response.data
+    })
+}
+
+const markAsDone = async () => {
+  await axios
+    .post(`activities/mark_as_done/${slug}/${activeLesson.value.slug}/`)
+    .then((response) => {
+      activity.value = response.data
+    })
 }
 
 const getComments = async () => {
-  await axios.get(`courses/${slug}/${activeLesson.value.slug}/get-comments`).then((response) => {
-    comments.value = response.data
-  })
+  await axios
+    .get(`courses/${course.value.slug}/${activeLesson.value.slug}/get-comments`)
+    .then((response) => {
+      comments.value = response.data
+    })
 }
 
 const addComment = (comment: Comment) => {
