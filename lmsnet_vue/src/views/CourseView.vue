@@ -24,42 +24,51 @@
                 {{ activeLesson.long_description }}
                 <hr />
 
-                <article class="media box" v-for="comment in comments" :key="comment.id">
-                  <div class="media-content">
-                    <div class="content">
-                      <p>
-                        <strong>{{ comment.name }}</strong> {{ comment.created_at }}<br />
-                        {{ comment.content }}
-                      </p>
-                    </div>
-                  </div>
-                </article>
+                <template v-if="activeLesson.lesson_type === 'quiz'">
+                  <h3>{{ quiz.question }}</h3>
 
-                <form v-on:submit.prevent="submitComment">
-                  <div class="field">
-                    <label class="label">Name</label>
-                    <div class="control">
-                      <input type="text" class="input" v-model="comment.name" />
-                    </div>
+                  <div class="control">
+                    <label class="radio">
+                      <input type="radio" :value="quiz.op1" v-model="selectedAnswer" />
+                      {{ quiz.op1 }}
+                    </label>
                   </div>
 
-                  <div class="field">
-                    <label class="label">Comment</label>
-                    <div class="control">
-                      <textarea class="textarea" v-model="comment.content"></textarea>
-                    </div>
+                  <div class="control">
+                    <label class="radio">
+                      <input type="radio" :value="quiz.op2" v-model="selectedAnswer" />
+                      {{ quiz.op2 }}
+                    </label>
                   </div>
 
-                  <div class="notification is-danger" v-for="error in errors" :key="error">
-                    {{ error }}
+                  <div class="control">
+                    <label class="radio">
+                      <input type="radio" :value="quiz.op3" v-model="selectedAnswer" />
+                      {{ quiz.op3 }}
+                    </label>
                   </div>
 
-                  <div class="field">
-                    <div class="control">
-                      <button class="button is-link">Submit</button>
-                    </div>
+                  <div class="control mt-4">
+                    <button class="button is-info" @click="submitQuiz">Submit</button>
                   </div>
-                </form>
+
+                  <template v-if="quizResult === 'Correct'">
+                    <div class="notification is-success mt-4">Correct :-D</div>
+                  </template>
+
+                  <template v-if="quizResult === 'Incorrect'">
+                    <div class="notification is-danger mt-4">Wrong! Please try again</div>
+                  </template>
+                </template>
+
+                <template v-if="activeLesson.lesson_type === 'article'">
+                  <CourseComment v-for="comment in comments" :key="comment.id" :comment="comment" />
+                  <AddComment
+                    :course="course"
+                    :activeLesson="activeLesson"
+                    @addComment="(value: any) => addComment(value)"
+                  />
+                </template>
               </template>
               <template v-else>
                 {{ course.long_description }}
@@ -78,12 +87,29 @@
 </template>
 
 <script setup lang="ts">
+import AddComment from '@/components/AddComment.vue'
+import CourseComment from '@/components/CourseComment.vue'
 import { useUserStore } from '@/stores'
 import axios from 'axios'
 import { onMounted, ref, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 interface Comment {
+  name: string
+  content: string
+  created_at?: string
+  id?: number
+}
+
+interface Quiz {
+  question: string
+  answer: string
+  op1: string
+  op2: string
+  op3: string
+}
+
+interface CourseComment {
   name: string
   content: string
   created_at?: string
@@ -98,6 +124,16 @@ const comments: Ref<Comment[]> = ref([])
 const errors: Ref<string[]> = ref([])
 const activeLesson: Ref<any> = ref({})
 
+const quiz: Ref<Quiz> = ref({
+  question: '',
+  answer: '',
+  op1: '',
+  op2: '',
+  op3: ''
+})
+const selectedAnswer = ref(null)
+const quizResult: Ref<string> = ref('')
+
 const comment: Ref<Comment> = ref({
   name: '',
   content: ''
@@ -107,34 +143,15 @@ const currentRoute = useRoute()
 
 const slug = currentRoute.params.slug
 
-const submitComment = () => {
-  errors.value = []
-
-  if (!comment.value.name) {
-    errors.value.push('Name is required.')
-  }
-  if (!comment.value.content) {
-    errors.value.push('Comment is required.')
-  }
-  if (errors.value.length > 0) {
-    return
-  }
-  axios
-    .post(`api/v1/courses/${slug}/${activeLesson.value.slug}/`, comment.value)
-    .then((response) => {
-      comment.value = {
-        name: '',
-        content: ''
-      }
-      comments.value.push(response.data)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-}
-
 const setActiveLesson = (lesson: any) => {
   activeLesson.value = lesson
+
+  if (lesson.lesson_type === 'quiz') {
+    selectedAnswer.value = null
+    getQuiz()
+  }
+
+  document.title = lesson.title + ' | LMSNET'
   errors.value = []
   getComments()
 }
@@ -145,6 +162,27 @@ const getComments = async () => {
     .then((response) => {
       comments.value = response.data
     })
+}
+
+const addComment = (comment: CourseComment) => {
+  comments.value.push(comment)
+}
+
+const getQuiz = async () => {
+  await axios.get(`api/v1/courses/${slug}/${activeLesson.value.slug}/get-quiz`).then((response) => {
+    quiz.value = response.data
+  })
+}
+
+const submitQuiz = async () => {
+  quizResult.value = ''
+  if (selectedAnswer.value) {
+    if (selectedAnswer.value === quiz.value.answer) {
+      quizResult.value = 'Correct'
+    } else {
+      quizResult.value = 'Incorrect'
+    }
+  }
 }
 
 onMounted(async () => {
