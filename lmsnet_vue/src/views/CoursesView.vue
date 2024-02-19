@@ -69,7 +69,7 @@ import { onMounted, ref, type Ref } from 'vue'
 
 const courses: Ref<any> = ref([])
 const categories: Ref<any> = ref([])
-const activeCategory: Ref<any> = ref(null)
+const activeCategory: Ref<any> = ref(-1)
 
 const setActiveCategory = (category: any) => {
   activeCategory.value = category
@@ -93,6 +93,7 @@ onMounted(() => {
   })
 
   document.title = 'Courses | LMSNET'
+  getCourses(-1)
 })
 </script>
 

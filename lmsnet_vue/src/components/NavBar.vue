@@ -24,6 +24,9 @@
               <router-link to="/log-in" class="button is-light">Log in</router-link>
             </template>
             <template v-else>
+              <router-link to="/dashboard/create-course" class="button is-primary"
+                >Create course</router-link
+              >
               <router-link to="/dashboard/my-account" class="button is-info"
                 >My account</router-link
               >
